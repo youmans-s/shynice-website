@@ -3,9 +3,13 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { PROJECTS } from '@/lib/supabase/site-data'
 
+const FALLBACK_IMAGE = '/logo.png' // make sure /public/logo.png exists (you said it does)
+
 export default function ProjectDetailPage({ params }: { params: { slug: string } }) {
   const project = PROJECTS.find((p) => p.slug === params.slug)
   if (!project) return notFound()
+
+  const imageSrc = project.image ?? FALLBACK_IMAGE
 
   return (
     <div className="space-y-6">
@@ -14,12 +18,19 @@ export default function ProjectDetailPage({ params }: { params: { slug: string }
       </Link>
 
       <div className="rounded-2xl border overflow-hidden bg-neutral-50">
-        <Image src={project.image} alt={project.title} width={1600} height={1000} className="h-[360px] w-full object-cover" />
+        <Image
+          src={imageSrc}
+          alt={project.title}
+          width={1600}
+          height={1000}
+          className="h-[360px] w-full object-cover"
+          priority
+        />
       </div>
 
       <div className="space-y-3">
         <h1 className="text-4xl font-semibold">{project.title}</h1>
-        <p className="text-neutral-700 text-lg">{project.long}</p>
+        {/* <p className="text-neutral-700 text-lg">{project.long}</p> */}
 
         <div className="flex flex-wrap gap-2">
           {project.stack.map((s) => (
@@ -41,7 +52,13 @@ export default function ProjectDetailPage({ params }: { params: { slug: string }
         {project.links?.length ? (
           <div className="pt-2 flex flex-wrap gap-3">
             {project.links.map((l) => (
-              <a key={l.href} href={l.href} target="_blank" rel="noreferrer" className="rounded-md border px-3 py-2 text-sm hover:bg-neutral-50">
+              <a
+                key={l.href}
+                href={l.href}
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-md border px-3 py-2 text-sm hover:bg-neutral-50"
+              >
                 {l.label}
               </a>
             ))}

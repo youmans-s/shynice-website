@@ -1,31 +1,31 @@
 'use client'
 
-import Link from 'next/link'
-import { useParams } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
+import { useParams, useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
 const BUCKET = 'private-images'
-const SIGNED_URL_SECONDS = 60 * 60 * 24
+const SIGNED_URL_SECONDS = 60 * 60 * 24 // 24h
 
-type Outfit = {
+type WishlistItemRow = {
   id: string
   title: string
-  occasion: string | null
-  collage_path: string | null
-  total_price_cents: number | null
+  category: string | null
+  url: string | null
+  image_path: string | null
+  price_cents: number | null
 }
 
-type OutfitItemRow = {
+type OutfitItemRowDb = {
   id: string
-  wishlist_items: {
-    id: string
-    title: string
-    category: string | null
-    url: string | null
-    image_path: string | null
-    price_cents: number | null
-  } | null
+  // IMPORTANT: some relationships come back as an array
+  wishlist_items: WishlistItemRow | WishlistItemRow[] | null
+}
+
+type UiOutfitItem = {
+  id: string
+  item: WishlistItemRow
 }
 
 function formatCents(cents: number) {
@@ -34,132 +34,205 @@ function formatCents(cents: number) {
 
 export default function OutfitDetailsPage() {
   const supabase = useMemo(() => createClient(), [])
-  const params = useParams() as { id?: string | string[] }
-  const id = Array.isArray(params.id) ? params.id[0] : params.id
+  const params = useParams<{ id: string }>()
+  const router = useRouter()
 
-  const [outfit, setOutfit] = useState<Outfit | null>(null)
-  const [collageUrl, setCollageUrl] = useState<string | null>(null)
-  const [items, setItems] = useState<OutfitItemRow[]>([])
-  const [itemUrls, setItemUrls] = useState<Record<string, string>>({})
+  const rawId = params?.id
+  const outfitId = Array.isArray(rawId) ? rawId[0] : rawId
+
+  const [outfitTitle, setOutfitTitle] = useState<string>('Outfit')
+  const [items, setItems] = useState<UiOutfitItem[]>([])
+  const [imageUrls, setImageUrls] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState(true)
+  const [errorMsg, setErrorMsg] = useState<string | null>(null)
 
   useEffect(() => {
-    async function run() {
-      if (!id) return
-      setLoading(true)
+    if (!outfitId) return
 
-      const { data: o } = await supabase
+    let cancelled = false
+
+    async function load() {
+      setLoading(true)
+      setErrorMsg(null)
+
+      // 1) Load outfit row (safe: select('*') so schema differences won't break)
+      const { data: outfitData, error: outfitErr } = await supabase
         .from('outfits')
-        .select('id,title,occasion,collage_path,total_price_cents')
-        .eq('id', id)
+        .select('*')
+        .eq('id', outfitId)
         .single()
 
-      setOutfit((o as Outfit) ?? null)
-
-      if (o?.collage_path) {
-        const { data: signed } = await supabase.storage
-          .from(BUCKET)
-          .createSignedUrl(o.collage_path, SIGNED_URL_SECONDS)
-        setCollageUrl(signed?.signedUrl ?? null)
-      } else {
-        setCollageUrl(null)
+      if (outfitErr) {
+        if (!cancelled) {
+          setErrorMsg(outfitErr.message)
+          setLoading(false)
+        }
+        return
       }
 
-      const { data: rows } = await supabase
+      const title = (outfitData as any)?.title ?? (outfitData as any)?.name ?? 'Outfit'
+      if (!cancelled) setOutfitTitle(String(title))
+
+      // 2) Load outfit items joined to wishlist_items
+      const { data: rows, error } = await supabase
         .from('outfit_items')
-        .select('id, wishlist_items (id,title,category,url,image_path,price_cents)')
-        .eq('outfit_id', id)
+        .select(
+          `
+          id,
+          wishlist_items (
+            id,
+            title,
+            category,
+            url,
+            image_path,
+            price_cents
+          )
+        `
+        )
+        .eq('outfit_id', outfitId)
 
-      const r = (rows as OutfitItemRow[]) ?? []
-      setItems(r)
+      if (error) {
+        if (!cancelled) {
+          setErrorMsg(error.message)
+          setItems([])
+          setImageUrls({})
+          setLoading(false)
+        }
+        return
+      }
 
+      // ✅ Normalize wishlist_items: object OR array -> single object
+      const normalized: UiOutfitItem[] = ((rows ?? []) as OutfitItemRowDb[])
+        .map((r) => {
+          const wi = r.wishlist_items
+          const item = Array.isArray(wi) ? wi[0] ?? null : wi
+          if (!item) return null
+          return { id: r.id, item }
+        })
+        .filter((x): x is UiOutfitItem => Boolean(x))
+
+      if (cancelled) return
+
+      setItems(normalized)
+
+      // 3) Signed URLs for images
       const map: Record<string, string> = {}
       await Promise.all(
-        r.map(async (row) => {
-          const w = row.wishlist_items
-          if (!w?.image_path) return
-          const { data: signed } = await supabase.storage
+        normalized.map(async (it) => {
+          const path = it.item.image_path
+          if (!path) return
+
+          const { data: signed, error: signedErr } = await supabase.storage
             .from(BUCKET)
-            .createSignedUrl(w.image_path, SIGNED_URL_SECONDS)
-          if (signed?.signedUrl) map[w.id] = signed.signedUrl
+            .createSignedUrl(path, SIGNED_URL_SECONDS)
+
+          if (!signedErr && signed?.signedUrl) {
+            // Key by wishlist item id (stable)
+            map[it.item.id] = signed.signedUrl
+          }
         })
       )
-      setItemUrls(map)
 
-      setLoading(false)
+      if (!cancelled) {
+        setImageUrls(map)
+        setLoading(false)
+      }
     }
 
-    run()
-  }, [id, supabase])
+    load()
 
-  if (loading) return <p className="text-neutral-600">Loading…</p>
+    return () => {
+      cancelled = true
+    }
+  }, [outfitId, supabase])
 
-  if (!outfit) {
+  const totalCents = items.reduce((sum, it) => sum + (it.item.price_cents ?? 0), 0)
+
+  if (!outfitId) {
     return (
-      <div className="space-y-4">
-        <Link className="text-sm hover:underline" href="/admin/outfits">
-          ← Back
-        </Link>
-        <div className="rounded-xl border p-4">Outfit not found.</div>
+      <div className="rounded-2xl border bg-white/70 p-4 text-sm text-neutral-700">
+        Missing outfit id.
       </div>
     )
   }
 
-  const computedTotal = items.reduce((sum, row) => sum + (row.wishlist_items?.price_cents ?? 0), 0)
-  const total = outfit.total_price_cents ?? computedTotal
-
   return (
     <div className="space-y-6">
-      <Link className="text-sm hover:underline" href="/admin/outfits">
-        ← Back
-      </Link>
+      <div className="flex items-start justify-between gap-3">
+        <div className="space-y-1">
+          <button type="button" onClick={() => router.back()} className="text-sm text-neutral-700 hover:underline">
+            ← Back
+          </button>
 
-      <div className="space-y-1">
-        <h1 className="text-3xl font-semibold">{outfit.title}</h1>
-        <p className="text-neutral-700">
-          {outfit.occasion ? `${outfit.occasion} • ` : ''}Total: <b>{formatCents(total)}</b>
-        </p>
-      </div>
+          <h1 className="text-2xl font-semibold">{outfitTitle}</h1>
 
-      {/* Full collage, no gray borders */}
-      <div className="overflow-hidden rounded-2xl">
-        {collageUrl ? (
-          <img src={collageUrl} alt="" className="w-full max-h-[80vh] object-contain bg-white" />
-        ) : (
-          <div className="h-[360px] bg-neutral-100" />
-        )}
-      </div>
-
-      <div className="space-y-3">
-        <h2 className="text-xl font-semibold">Items</h2>
-
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {items.map((row) => {
-            const w = row.wishlist_items
-            if (!w) return null
-            const img = itemUrls[w.id]
-
-            return (
-              <div key={row.id} className="rounded-2xl border p-3">
-                <div className="overflow-hidden rounded-xl">
-                  {img ? <img src={img} alt="" className="h-44 w-full object-cover" /> : <div className="h-44 bg-neutral-100" />}
-                </div>
-
-                <div className="mt-3 font-medium">{w.title}</div>
-                <div className="text-sm text-neutral-600">
-                  {w.category ?? 'Uncategorized'} • {w.price_cents != null ? formatCents(w.price_cents) : 'No price'}
-                </div>
-
-                {w.url ? (
-                  <a className="mt-1 inline-block text-sm hover:underline" href={w.url} target="_blank" rel="noreferrer">
-                    Link
-                  </a>
-                ) : null}
-              </div>
-            )
-          })}
+          <div className="text-sm text-neutral-700">
+            {items.length} items • Total {formatCents(totalCents)}
+          </div>
         </div>
+
+        <Link
+          href="/admin/outfits"
+          className="rounded-md border bg-white/70 px-3 py-2 text-sm hover:bg-white"
+        >
+          All outfits
+        </Link>
       </div>
+
+      {errorMsg && (
+        <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{errorMsg}</div>
+      )}
+
+      {loading ? (
+        <p className="text-neutral-600">Loading…</p>
+      ) : items.length === 0 ? (
+        <div className="rounded-2xl border bg-white/70 p-4 text-neutral-700">No items found for this outfit.</div>
+      ) : (
+        <>
+          {/* Collage: images touch each other (no gray borders) */}
+          <div className="overflow-hidden rounded-3xl ring-1 ring-black/5">
+            <div className="grid grid-cols-2 gap-0">
+              {items.map((it) => {
+                const src = imageUrls[it.item.id]
+                return (
+                  <div key={it.id} className="relative aspect-square bg-neutral-100">
+                    {src ? (
+                      <img src={src} alt={it.item.title} className="h-full w-full object-cover" />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center text-sm text-neutral-500">No image</div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Items list */}
+          <div className="rounded-3xl border bg-white/70 p-4">
+            <div className="mb-3 text-sm font-semibold text-neutral-900">Items</div>
+
+            <div className="space-y-3">
+              {items.map((it) => (
+                <div key={it.id} className="flex items-start justify-between gap-3 rounded-2xl border bg-white/60 p-3">
+                  <div>
+                    <div className="font-medium">{it.item.title}</div>
+                    <div className="text-sm text-neutral-700">
+                      {it.item.category ?? 'Uncategorized'}
+                      {it.item.price_cents != null ? ` • ${formatCents(it.item.price_cents)}` : ''}
+                    </div>
+
+                    {it.item.url && (
+                      <a href={it.item.url} target="_blank" rel="noreferrer" className="text-sm text-emerald-700 hover:underline">
+                        Open link
+                      </a>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }
