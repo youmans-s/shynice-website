@@ -1,26 +1,159 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* =========================================
+   Base: prevent white flash + keep it clean
+   ========================================= */
+html {
+  background: #0b1220; /* canvas behind everything */
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: transparent; /* let .page-wave show */
+}
+
+/* =========================================
+   Apple-ish moving wave background (FULL PAGE)
+   Add <div className="page-wave" /> in layout.tsx
+   ========================================= */
+
+.page-wave {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  pointer-events: none;
+  overflow: hidden;
+
+  /* base dark + subtle blobs (static layer) */
+  background:
+    radial-gradient(65% 60% at 18% 22%, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0) 58%),
+    radial-gradient(60% 55% at 82% 24%, rgba(236, 72, 153, 0.18) 0%, rgba(236, 72, 153, 0) 60%),
+    radial-gradient(70% 65% at 72% 86%, rgba(245, 158, 11, 0.14) 0%, rgba(245, 158, 11, 0) 60%),
+    linear-gradient(180deg, #0b1220 0%, #0b1220 100%);
+}
+
+/* Layer A: soft liquid swirl */
+.page-wave::before {
+  content: "";
+  position: absolute;
+  inset: -45%;
+  opacity: 0.55;
+  filter: blur(90px);
+  transform: translate3d(0, 0, 0);
+
+  background: conic-gradient(
+    from 180deg at 50% 50%,
+    rgba(16, 185, 129, 0.60),
+    rgba(236, 72, 153, 0.48),
+    rgba(245, 158, 11, 0.32),
+    rgba(16, 185, 129, 0.60)
+  );
+
+  animation: waveSpin 22s linear infinite;
+}
+
+/* Layer B: "true wave" lines sliding across the screen */
+.page-wave::after {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  opacity: 0.22;
+  transform: translate3d(0, 0, 0);
+  mix-blend-mode: overlay;
+
+  /* SVG waves (data URI) */
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%201400%20400%27%3E%3Cpath%20d%3D%27M0%20200%20C%20175%20120%20350%20280%20525%20200%20C%20700%20120%20875%20280%201050%20200%20C%201225%20120%201400%20280%201575%20200%27%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-opacity%3D%27.14%27%20stroke-width%3D%272%27%2F%3E%3Cpath%20d%3D%27M0%20260%20C%20175%20180%20350%20340%20525%20260%20C%20700%20180%20875%20340%201050%20260%20C%201225%20180%201400%20340%201575%20260%27%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-opacity%3D%27.10%27%20stroke-width%3D%272%27%2F%3E%3Cpath%20d%3D%27M0%20140%20C%20175%2060%20350%20220%20525%20140%20C%20700%2060%20875%20220%201050%20140%20C%201225%2060%201400%20220%201575%20140%27%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-opacity%3D%27.08%27%20stroke-width%3D%271.5%27%2F%3E%3C%2Fsvg%3E");
+  background-repeat: repeat;
+  background-size: 1400px 400px;
+  background-position: 0 0;
+
+  animation: waveSlide 18s linear infinite;
+}
+
+/* =========================================
+   "Wave surface" for inside your framed container
+   Apply className="wave-surface" to a rounded wrapper
+   ========================================= */
+
+.wave-surface {
+  position: relative;
+  overflow: hidden;
+}
+
+/* subtle base tint so content stays readable */
+.wave-surface {
+  background: rgba(243, 246, 251, 0.55);
+  backdrop-filter: blur(10px);
+}
+
+/* inside swirl */
+.wave-surface::before {
+  content: "";
+  position: absolute;
+  inset: -45%;
+  opacity: 0.28;
+  filter: blur(80px);
+  transform: translate3d(0, 0, 0);
+  border-radius: inherit;
+
+  background: conic-gradient(
+    from 160deg at 50% 50%,
+    rgba(16, 185, 129, 0.80),
+    rgba(236, 72, 153, 0.55),
+    rgba(245, 158, 11, 0.40),
+    rgba(16, 185, 129, 0.80)
+  );
+
+  animation: waveSpin 18s linear infinite;
+}
+
+/* inside wave lines */
+.wave-surface::after {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  opacity: 0.16;
+  transform: translate3d(0, 0, 0);
+  mix-blend-mode: overlay;
+  border-radius: inherit;
+
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%201400%20400%27%3E%3Cpath%20d%3D%27M0%20200%20C%20175%20120%20350%20280%20525%20200%20C%20700%20120%20875%20280%201050%20200%20C%201225%20120%201400%20280%201575%20200%27%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-opacity%3D%27.14%27%20stroke-width%3D%272%27%2F%3E%3Cpath%20d%3D%27M0%20260%20C%20175%20180%20350%20340%20525%20260%20C%20700%20180%20875%20340%201050%20260%20C%201225%20180%201400%20340%201575%20260%27%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-opacity%3D%27.10%27%20stroke-width%3D%272%27%2F%3E%3Cpath%20d%3D%27M0%20140%20C%20175%2060%20350%20220%20525%20140%20C%20700%2060%20875%20220%201050%20140%20C%201225%2060%201400%20220%201575%20140%27%20fill%3D%27none%27%20stroke%3D%27white%27%20stroke-opacity%3D%27.08%27%20stroke-width%3D%271.5%27%2F%3E%3C%2Fsvg%3E");
+  background-repeat: repeat;
+  background-size: 1400px 400px;
+  background-position: 0 0;
+
+  animation: waveSlide 22s linear infinite;
+}
+
+/* ensure content sits above */
+.wave-surface > * {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes waveSpin {
+  from {
+    transform: rotate(0deg) scale(1.05);
+  }
+  to {
+    transform: rotate(360deg) scale(1.05);
+  }
+}
+
+@keyframes waveSlide {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -1400px 0;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .page-wave::before,
+  .page-wave::after,
+  .wave-surface::before,
+  .wave-surface::after {
+    animation: none !important;
+  }
 }
