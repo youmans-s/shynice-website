@@ -116,9 +116,9 @@ export default function PortfolioShell({ children }: { children: React.ReactNode
         {/* wave background surface */}
         <div className="rounded-[32px] wave-surface p-6">
           <div className="overflow-x-auto">
-            <div className="min-w-[980px]">
+            <div>
               {/* TOP BAR (tabs above BOTH cards like the demo) */}
-              <div className="mb-14 flex items-start justify-between gap-4">
+              <div className="mb-10 flex flex-col items-center gap-4 md:mb-14 md:flex-row md:items-start md:justify-between">
   {/* Push logo closer to the top-left corner */}
   <div className="-ml-2 -mt-2">
     <BrandLogo />
@@ -133,7 +133,7 @@ export default function PortfolioShell({ children }: { children: React.ReactNode
             key={t.href}
             href={t.href}
             className={cx(
-              'flex w-[92px] flex-col items-center justify-center gap-1 rounded-2xl px-3 py-3 text-xs font-semibold transition',
+              'flex w-[68px] flex-col items-center justify-center gap-1 rounded-2xl px-2 py-3 text-xs font-semibold transition sm:w-[92px] sm:px-3',
               active
                 ? 'bg-gradient-to-br from-emerald-600 to-emerald-700 text-white shadow'
                 : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
@@ -151,7 +151,7 @@ export default function PortfolioShell({ children }: { children: React.ReactNode
               </div>
 
               {/* TWO EQUAL-HEIGHT CARDS */}
-              <div className="grid grid-cols-[320px_1fr] gap-6 items-stretch">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-[320px_1fr] md:items-stretch">
                 {/* LEFT SIDEBAR */}
                 <aside className="relative h-full rounded-3xl bg-white/70 backdrop-blur-md shadow-sm ring-1 ring-black/5 px-5 pb-5 pt-20">
                   {/* floating avatar (half outside the sidebar like the demo) */}
