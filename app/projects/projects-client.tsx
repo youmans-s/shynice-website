@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { PROJECTS, type PortfolioProject } from '@/lib/supabase/portfolio-data'
 
 function Chip({ children }: { children: React.ReactNode }) {
@@ -85,6 +86,12 @@ function ProjectModal({
   project: PortfolioProject | null
   onClose: () => void
 }) {
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
   useEffect(() => {
     if (!project) return
     function onKey(e: KeyboardEvent) {
@@ -99,7 +106,7 @@ function ProjectModal({
     }
   }, [project, onClose])
 
-  if (!project) return null
+  if (!project || !mounted) return null
 
   const hasLinks = !!(
     project.links?.github ||
@@ -108,7 +115,7 @@ function ProjectModal({
     project.links?.linkedin
   )
 
-  return (
+  const modalContent = (
     <div
       className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 p-4 pt-12 backdrop-blur-sm"
       onClick={onClose}
@@ -245,6 +252,8 @@ function ProjectModal({
       </div>
     </div>
   )
+
+  return createPortal(modalContent, document.body)
 }
 
 export default function ProjectsClient() {

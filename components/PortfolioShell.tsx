@@ -118,7 +118,7 @@ export default function PortfolioShell({ children }: { children: React.ReactNode
           <div className="overflow-x-auto">
             <div>
               {/* TOP BAR (tabs above BOTH cards like the demo) */}
-              <div className="mb-10 flex flex-col items-center gap-4 md:mb-14 md:flex-row md:items-start md:justify-between">
+              <div className="mb-20 flex flex-col items-center gap-4 md:mb-14 md:flex-row md:items-start md:justify-between">
   {/* Push logo closer to the top-left corner */}
   <div className="-ml-2 -mt-2">
     <BrandLogo />
