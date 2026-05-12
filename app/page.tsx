@@ -13,8 +13,11 @@ export default function HomePage() {
           </div>
 
           <p className="max-w-2xl text-neutral-700 leading-relaxed">
-            Hello! I’m a full‑stack developer passionate about building clean, user‑friendly products.
-            I enjoy combining strong engineering fundamentals with UI that feels polished and easy to use.
+            Hello! I&apos;m a software engineer with co-op experience in privacy engineering
+            and cloud security at Comcast Cybersecurity and NBME. I enjoy full‑stack
+            development and want to keep growing in secure cloud systems and the engineering
+            fundamentals behind them. AWS Cloud Practitioner certified; currently studying
+            for Solutions Architect Associate.
           </p>
         </div>
 

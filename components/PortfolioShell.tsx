@@ -192,16 +192,6 @@ export default function PortfolioShell({ children }: { children: React.ReactNode
                           <LinkedInIcon />
                         </SocialIcon>
                       </a>
-                      <a href={PROFILE.socials.x} target="_blank" rel="noreferrer" aria-label="X">
-                        <SocialIcon>
-                          <XIcon />
-                        </SocialIcon>
-                      </a>
-                      <a href={PROFILE.socials.discord} target="_blank" rel="noreferrer" aria-label="Discord">
-                        <SocialIcon>
-                          <DiscordIcon />
-                        </SocialIcon>
-                      </a>
                     </div>
 
                     {/* certifications */}

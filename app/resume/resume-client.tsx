@@ -46,7 +46,13 @@ export default function ResumeClient() {
             <div className="text-xs text-neutral-600">{r.time}</div>
             <div className="mt-1 font-semibold">{r.title}</div>
             <div className="text-sm text-neutral-700">{r.org}</div>
-            {r.meta && <div className="mt-2 text-sm text-neutral-600">{r.meta}</div>}
+            {r.bullets && r.bullets.length > 0 && (
+              <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-neutral-700">
+                {r.bullets.map((b, i) => (
+                  <li key={i} className="leading-relaxed">{b}</li>
+                ))}
+              </ul>
+            )}
           </div>
         ))}
       </div>

@@ -29,54 +29,51 @@ export const CERTIFICATIONS = [
   {
     name: 'AWS Certified Cloud Practitioner',
     issuer: 'Amazon Web Services',
-    year: '2026', // optional
-    url: 'https://www.credly.com/', // optional (replace when you have your badge link)
+    year: 'April 2026',
+    url: 'https://www.credly.com/badges/0b326e99-5426-4605-81af-7e4e6f24ad91/public_url',
   },
   {
     name: 'AWS Certified Solutions Architect – Associate',
-    issuer: 'Amazon Web Services',
-    year: '2026',
-    url: 'https://www.credly.com/', // optional
+    issuer: 'Amazon Web Services • In Progress',
+    year: 'Expected June 2026',
+    url: '',
   },
 ] as const
-
 
 export const PROFILE = {
   firstName: 'Shynice',
   lastName: 'Youmans',
-  title: 'Full‑Stack Developer',
-  profileImage: '/profile.jpg', // put profile.jpg in /public
+  title: 'Software Engineer',
+  profileImage: '/profile.jpg',
   email: 'youmansshynice@gmail.com',
   location: 'Philadelphia, PA',
-  resumeUrl: '/resume.pdf',
+  resumeUrl: '/Shynice_Youmans_Resume.pdf',
 
   socials: {
-    github: 'https://github.com/YOUR_GITHUB',
-    linkedin: 'https://www.linkedin.com/in/YOUR_LINKEDIN',
-    x: 'https://x.com/YOUR_X',
-    discord: 'https://discord.com/users/YOUR_ID',
+    github: 'https://github.com/youmans-s',
+    linkedin: 'https://www.linkedin.com/in/sjyoumans',
   },
 }
 
 export const WHAT_I_DO = [
   {
-    title: 'Web Development',
-    desc: 'Building fast, clean, responsive web apps with Next.js, React, and TypeScript.',
+    title: 'Full‑Stack Development',
+    desc: 'Building clean, responsive web apps with Next.js, React, TypeScript, and Spring Boot on the backend.',
     style: 'image',
   },
   {
-    title: 'Full‑Stack Systems',
-    desc: 'APIs, auth, databases, storage — and secure data access with RLS policies.',
+    title: 'Privacy & Security Engineering',
+    desc: 'PII/PHI de-identification, secure data handling, and applying privacy threat modeling to cloud systems.',
     style: 'image',
   },
   {
-    title: 'UI / UX Thinking',
-    desc: 'Minimal, readable UI with great spacing, interaction design, and accessibility.',
+    title: 'Cloud & AWS',
+    desc: 'AWS Lambda, IAM, S3, CodePipeline. AWS Cloud Practitioner certified; studying for Solutions Architect Associate.',
     style: 'text',
   },
   {
-    title: 'Cloud & Tools',
-    desc: 'Comfortable shipping with modern tooling: CI, deployment, and cloud services.',
+    title: 'APIs & Data',
+    desc: 'REST API design, PostgreSQL, request validation, and writing the tests that keep them honest.',
     style: 'text',
   },
 ] as const
@@ -84,106 +81,115 @@ export const WHAT_I_DO = [
 export const RESUME = {
   education: [
     {
-      time: '2019 – 2024',
+      time: '2019 – Sept. 2025',
       title: 'B.S. Software Engineering',
       org: 'Drexel University',
-      meta: 'Minor in Biology • Full‑ride academic scholarship • Liberty Scholarship',
+      bullets: [
+        'Minor in Biology',
+        'Liberty Scholarship — Full-Tuition Merit Award',
+      ],
     },
   ],
   experience: [
     {
-      time: 'Co‑op',
-      title: 'Software Engineering Co‑op',
-      org: 'Comcast',
-      meta: 'Full‑stack features • UI + APIs • shipped production code',
+      time: 'April 2024 – Sept. 2024',
+      title: 'Privacy & Data Protection Engineer – Co-op',
+      org: 'Comcast (Cybersecurity Division)',
+      bullets: [
+        'Contributed to an enterprise de-identification risk engine for PII/PHI exposure',
+        'Expanded automated test coverage on AWS Lambda functions supporting the engine',
+        'Deployed Lambda tools that automated PII/PHI scanning within data pipelines',
+        'Participated in monthly compliance reviews and tracked remediation in Jira',
+      ],
     },
     {
-      time: 'Co‑op',
-      title: 'Software Engineering Co‑op',
-      org: 'NBME',
-      meta: 'Engineering improvements • feature delivery • collaboration',
+      time: 'April 2023 – Sept. 2023',
+      title: 'System Administrator – Co-op',
+      org: 'NBME (National Board of Medical Examiners)',
+      bullets: [
+        'Integrated Jira Cloud with AWS CodePipeline/CodeBuild for unified audit trails',
+        'Built custom Jira workflows with JMWE and Nunjucks for automated logging and access rules',
+        'Authored Bash scripts for audit workflows across AWS and Jira',
+      ],
     },
   ],
-  workSkills: ['Next.js', 'React', 'TypeScript', 'Supabase', 'Postgres', 'REST APIs', 'Git', 'Tailwind'],
-  softSkills: ['Communication', 'Ownership', 'Teamwork', 'Time Management', 'Mentorship'],
+  workSkills: [
+    'Java',
+    'Python',
+    'TypeScript',
+    'JavaScript',
+    'Spring Boot',
+    'React',
+    'Next.js',
+    'AWS Lambda',
+    'REST APIs',
+    'PostgreSQL',
+    'Bash',
+    'Git',
+    'CI/CD',
+  ],
+  softSkills: ['Communication', 'Ownership', 'Teamwork', 'Cross-functional Collaboration', 'Time Management'],
 }
 
 export const PROJECTS: PortfolioProject[] = [
   {
+    id: 'profit-quest',
+    title: 'Profit Quest',
+    category: 'Full‑Stack • Team Project',
+    summary:
+      'A full-stack investment competition platform with real-time portfolio tracking, live market data, and REST APIs. Built with a Drexel team for senior capstone.',
+    role: 'Backend / API Developer — REST endpoints, validation, and testing',
+    details:
+      'Java + Spring Boot backend serving REST APIs to a React/TypeScript frontend, with live market data integration for real-time gameplay. Designed and implemented endpoints with input validation, error handling, and unit testing. Featured publicly on both the live app and the team showcase page.',
+    techStack: ['Java', 'Spring Boot', 'React', 'TypeScript', 'PostgreSQL', 'REST APIs'],
+    skills: ['REST API design', 'Backend testing', 'Team collaboration', 'Agile delivery'],
+    highlights: [
+      'Real-time portfolio + leaderboard data via REST APIs',
+      'Live market data integration with type-safe React frontend',
+      'Endpoint design with validation, error handling, and unit tests',
+      'Featured on team / business showcase page',
+    ],
+    links: {
+      site: 'https://www.profitquest.app/',
+      demo: 'https://ghill.com/profitquest/',
+    },
+  },
+  {
     id: 'admin-dashboard',
     title: 'Private Admin Dashboard',
-    category: 'Full‑Stack',
-    summary: 'A secure admin area for wishlist, outfits, apartments, and debt tracking.',
-    role: 'Full‑Stack Developer — designed + built end-to-end features',
-    details:
-      'Built a private dashboard with authentication, database-driven CRUD, image uploads, and clean UI patterns. Focused on privacy, usability, and real workflow needs.',
-    techStack: ['Next.js', 'TypeScript', 'Supabase Auth', 'Postgres', 'Storage', 'RLS', 'Tailwind'],
-    skills: ['Auth', 'CRUD', 'Database design', 'Security/RLS', 'UI systems', 'File uploads'],
-    highlights: [
-      'Secure login + protected routes',
-      'Image upload with signed URLs',
-      'Editable lists + grouped wishlist categories + totals',
-      'Clean dashboard UI and maintainable components',
-    ],
-    image: '/drexel.jpg',
-    links: {
-      github: 'https://github.com/YOUR_GITHUB/your-repo',
-      demo: 'https://shynice.com/admin', // optional
-      site: 'https://shynice.com',
-    },
-    // Optional gallery (only keep these if you actually have these files)
-    // Put images here: public/projects/admin/1.png etc
-    gallery: [
-      { src: '/projects/admin/1.png', alt: 'Admin dashboard' },
-      { src: '/projects/admin/2.png', alt: 'Wishlist view' },
-    ],
-  },
-
-  {
-    id: 'aws-api-demo',
-    title: 'AWS + API Demo Project',
-    category: 'Cloud / Backend',
-    summary: 'A project showcasing AWS skills, APIs, and deployment.',
-    role: 'Backend / Cloud Developer — API design + deployment',
-    details:
-      'Designed and implemented an API-backed workflow with cloud deployment, monitoring, and secure access patterns. Includes documentation and demo artifacts.',
-    techStack: ['AWS', 'API Gateway', 'Lambda', 'DynamoDB', 'CloudWatch', 'TypeScript'],
-    skills: ['API design', 'Cloud deployment', 'Security', 'Observability', 'System thinking'],
-    highlights: [
-      'Designed API endpoints + validation',
-      'Deployed and monitored cloud functions',
-      'Documented system and usage clearly',
-    ],
-    image: '/comcast.png',
-    links: {
-      github: 'https://github.com/YOUR_GITHUB/aws-api-demo',
-      demo: 'https://your-demo-link.com',
-    },
-    // Optional demo video:
-    // Use an EMBED url (not the normal watch?v= url)
-    demo: { type: 'youtube', embedUrl: 'https://www.youtube.com/embed/VIDEO_ID' },
-  },
-
-  {
-    id: 'linkedin-recognition',
-    title: 'Contract Project Spotlight (Repo Private)',
-    category: 'Professional Experience',
+    category: 'Full‑Stack • Personal',
     summary:
-      'Selected work from a contract role. Repository is private due to contract terms, but recognition is public.',
-    role: 'Full‑Stack Developer — feature delivery + collaboration',
+      'A secure, private dashboard I built for myself to handle real personal-workflow data — wishlists, outfits, apartments, debt tracking.',
+    role: 'Full‑Stack Developer — designed + built end-to-end',
     details:
-      'Delivered features and improvements in a contract environment. Coordinated with stakeholders, shipped work on timelines, and received recognition for impact.',
-    techStack: ['React', 'TypeScript', 'APIs', 'SQL', 'Agile delivery'],
-    skills: ['Delivery', 'Collaboration', 'Product thinking', 'Communication'],
+      'Built with authentication, row-level security, signed image upload URLs, and an editable interface for grouped lists with running totals. Focused on privacy patterns, usability, and maintainable component architecture.',
+    techStack: ['Next.js', 'TypeScript', 'Supabase Auth', 'PostgreSQL', 'Supabase Storage', 'RLS', 'Tailwind'],
+    skills: ['Authentication', 'Row-level security', 'Database design', 'File uploads', 'UI systems'],
     highlights: [
-      'Shipped features under real constraints',
-      'Worked cross-functionally with stakeholders',
-      'Recognized publicly for impact',
+      'Secure login + protected routes via Supabase Auth',
+      'Image uploads with signed URLs',
+      'Editable lists with grouped categories + running totals',
+      'PostgreSQL schema designed with row-level security policies',
     ],
-    image: '/nbme.png',
+  },
+  {
+    id: 'personal-site',
+    title: 'shynice.com — This Site',
+    category: 'Full‑Stack • Personal',
+    summary:
+      'The portfolio you\'re currently viewing. Designed and built from scratch with Next.js, deployed on Vercel.',
+    role: 'Designer + Developer — full design and implementation',
+    details:
+      'Designed and built my own portfolio with a focus on clean typography, responsive layout, and a layered gradient/glassmorphic card UI. Deployed on Vercel with continuous deployment from main.',
+    techStack: ['Next.js', 'TypeScript', 'React', 'Tailwind CSS', 'Vercel'],
+    skills: ['UI design', 'Component architecture', 'Responsive layout', 'Continuous deployment'],
+    highlights: [
+      'Custom layout with gradient frame and glassmorphic cards',
+      'Reusable PortfolioShell component for consistent sidebar across pages',
+      'Auto-deployed on Vercel from main branch',
+    ],
     links: {
-      linkedin: 'https://www.linkedin.com/in/YOUR_LINKEDIN/posts/POST_ID',
-      site: 'https://public-site-link.com',
+      site: 'https://shynice.com',
     },
   },
 ]
