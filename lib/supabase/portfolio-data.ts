@@ -137,8 +137,8 @@ export const PROJECTS: PortfolioProject[] = [
     title: 'Profit Quest',
     category: 'Full‑Stack • Team Project',
     summary:
-      'A full-stack investment competition platform with real-time portfolio tracking, live market data, and REST APIs. Built with a Drexel team for senior capstone.',
-    role: 'Backend / API Developer — REST endpoints, validation, and testing',
+      'A full-stack investment competition platform with real-time portfolio tracking, live market data, and REST APIs. Built with a Drexel team for senior project.',
+    role:'Full‑Stack Developer (primarily backend) — REST APIs, validation, testing, and React integration',
     details:
       'Java + Spring Boot backend serving REST APIs to a React/TypeScript frontend, with live market data integration for real-time gameplay. Designed and implemented endpoints with input validation, error handling, and unit testing. Featured publicly on both the live app and the team showcase page.',
     techStack: ['Java', 'Spring Boot', 'React', 'TypeScript', 'PostgreSQL', 'REST APIs'],
