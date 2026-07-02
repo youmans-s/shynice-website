@@ -45,28 +45,57 @@ export default function AwsAuditPage() {
         <div className="rounded-[34px] bg-gradient-to-br from-emerald-500 via-emerald-400 to-pink-400 p-[3px] shadow-lg">
           <div className="rounded-[32px] bg-white/95">
 
-            <Section className="text-center">
-              <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-emerald-800 ring-1 ring-emerald-200">
-                AWS Cost Audit
+            {/* Split-panel hero */}
+            <section className="px-6 pt-10 pb-16 sm:px-10 sm:pt-14 sm:pb-20">
+              <div className="grid gap-8 md:grid-cols-5 md:gap-10">
+                {/* LEFT PANEL: pitch */}
+                <div className="md:col-span-2">
+                  <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-emerald-800 ring-1 ring-emerald-200">
+                    AWS Cost Audit
+                  </div>
+                  <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
+                    Cut your AWS bill 20–40%.
+                  </h1>
+                  <p className="mt-5 text-base leading-relaxed text-neutral-700">
+                    A read-only audit that shows you exactly where the waste is — in real dollars. Nothing in production gets touched without your sign-off.
+                  </p>
+                  <ul className="mt-6 space-y-3 text-sm">
+                    <li className="flex items-start gap-3">
+                      <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-800">✓</span>
+                      <span className="text-neutral-800">Prioritized report in plain dollars</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-800">✓</span>
+                      <span className="text-neutral-800">Read-only access · zero reliability risk</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-800">✓</span>
+                      <span className="text-neutral-800"><strong>3× guarantee</strong> — no savings, no fee</span>
+                    </li>
+                  </ul>
+                  <div className="mt-6 flex flex-wrap gap-2">
+                    <span className="rounded-full bg-neutral-100 px-3 py-1 text-xs font-medium text-neutral-700 ring-1 ring-neutral-200">AWS Certified</span>
+                    <span className="rounded-full bg-neutral-100 px-3 py-1 text-xs font-medium text-neutral-700 ring-1 ring-neutral-200">Cost Explorer</span>
+                    <span className="rounded-full bg-neutral-100 px-3 py-1 text-xs font-medium text-neutral-700 ring-1 ring-neutral-200">Lambda · IAM</span>
+                  </div>
+                </div>
+
+                {/* RIGHT PANEL: Cal.com iframe */}
+                <div className="md:col-span-3">
+                  <div className="rounded-2xl bg-white/70 p-2 shadow-lg ring-1 ring-black/5 backdrop-blur-md">
+                    <iframe
+                      src="https://cal.com/awsshynice/15min?embed=true&theme=light&layout=month_view"
+                      title="Book a 15-min AWS cost audit intro call"
+                      className="h-[620px] w-full rounded-xl border-0"
+                      loading="lazy"
+                    />
+                  </div>
+                  <p className="mt-3 text-center text-xs text-neutral-500">
+                    Trouble loading? <a href="https://cal.com/awsshynice/15min" target="_blank" rel="noreferrer" className="font-semibold text-emerald-800 underline">Open the booking page →</a>
+                  </p>
+                </div>
               </div>
-              <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-                Cut your AWS bill 20–40% — without touching reliability.
-              </h1>
-              <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-neutral-700">
-                An AWS-certified engineer audits your environment, shows you exactly where the waste is in real dollars, and (if you want) implements the safe fixes. Read-only. Nothing gets broken.
-              </p>
-              <div className="mt-8">
-                <a
-                  href="#booking"
-                  className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-700 px-6 py-3 text-base font-semibold text-white shadow transition hover:brightness-105"
-                >
-                  See if it&apos;s worth doing →
-                </a>
-                <p className="mt-3 text-sm text-neutral-500">
-                  5 quick questions. If it&apos;s a fit, book a 15-min call.
-                </p>
-              </div>
-            </Section>
+            </section>
 
             <Section className="border-t border-neutral-200">
               <SectionHeading>The problem</SectionHeading>
